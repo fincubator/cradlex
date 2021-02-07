@@ -1,0 +1,4 @@
+aiogram==2.11.2
+alembic==1.5.4
+asyncpg==0.21.0
+SQLAlchemy==1.4.0b1

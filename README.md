@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/fincubator/cradlex)][LICENSE]
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=fincubator/cradlex)](https://dependabot.com)
-[![pre-commit](https://github.com/fincubator/cradlex/workflows/pre-comit/badge.svg)](https://github.com/fincubator/cradlex/actions?query=workflow%3Apre-commit)
+[![pre-commit](https://github.com/fincubator/cradlex/workflows/pre-commit/badge.svg)](https://github.com/fincubator/cradlex/actions?query=workflow%3Apre-commit)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ---

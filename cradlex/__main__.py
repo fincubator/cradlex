@@ -9,6 +9,8 @@ import cradlex.handlers  # noqa: F401
 from cradlex import config
 from cradlex.bot import bot
 from cradlex.bot import dp
+from cradlex.database import engine
+from cradlex.models import Base
 
 
 async def on_startup(webhook_path=None, *args):
@@ -16,6 +18,8 @@ async def on_startup(webhook_path=None, *args):
 
     Set webhook and run background tasks.
     """
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     await bot.delete_webhook()
     if webhook_path is not None:
         await bot.set_webhook("https://" + config.SERVER_HOST + webhook_path)

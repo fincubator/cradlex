@@ -1,6 +1,9 @@
 from os import getenv
 
 
+__all__ = ["Config"]
+
+
 DEFAULT_VALUES = {
     "SET_WEBHOOK": False,
     "INTERNAL_HOST": "127.0.0.1",

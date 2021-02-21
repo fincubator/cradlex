@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  cradlex:
+    build: .
+    container_name: cradlex
+    depends_on:
+      - database
+    env_file:
+      - .env
+    restart: on-failure
+    volumes:
+      - ${DATABASE_PASSWORD_FILENAME}:${DATABASE_PASSWORD_FILENAME}:ro
+      - ${TOKEN_FILENAME}:${TOKEN_FILENAME}:ro
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+
+  database:
+    image: postgres
+    container_name: ${DATABASE_HOST}
+    environment:
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD_FILE=${DATABASE_PASSWORD_FILENAME}
+      - POSTGRES_DB=${DATABASE_NAME}
+    command: postgres -p ${DATABASE_PORT}
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_PORT}
+    volumes:
+      - ${DATABASE_PASSWORD_FILENAME}:${DATABASE_PASSWORD_FILENAME}:ro

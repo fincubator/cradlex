@@ -17,6 +17,27 @@
 * [Alembic](https://alembic.sqlalchemy.org/) - database migration tool for usage with the SQLAlchemy
 
 ## Installation and launch
+### Using Docker
+1. Clone the repository:
+```bash
+git clone https://github.com/fincubator/cradlex
+cd cradlex
+```
+2. Create environment file from example:
+```bash
+cp .env.example .env
+```
+3. Personalize settings by modifying ```.env``` with your preferable text editor. Remove ```INTERNAL_HOST``` and ```DATABASE_HOST``` if you want bot and database running on localhost.
+4. Create a new Telegram bot by talking to [@BotFather](https://t.me/BotFather) and get its API token.
+5. Create a file containing Telegram bot's API token with filename specified in ```TOKEN_FILENAME``` from ```.env``` (example in [secrets/tbtoken](secrets/tbtoken)).
+6. Create a file containing database password with filename specified in ```DATABASE_PASSWORD_FILENAME``` from ```.env``` (example in [secrets/dbpassword](secrets/dbpassword)).
+7. Install [Docker Compose](https://docs.docker.com/compose/install/) version no less than 1.26.0.
+8. Start container:
+```bash
+docker-compose up --build
+```
+
+### Manual
 1. Clone the repository:
 ```bash
 git clone https://github.com/fincubator/cradlex

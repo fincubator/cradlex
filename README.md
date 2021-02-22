@@ -12,6 +12,7 @@
 ## Requirements
 * [Python](https://www.python.org/) >= 3.9
 * [PostgreSQL](https://www.postgresql.org/) >= 13 - relational database management system
+* [AIOGram](https://aiogram.dev/) - asynchronous Python framework for Telegram Bot API
 * [asyncpg](https://github.com/MagicStack/asyncpg) - asynchronous PostgreSQL database client library for Python
 * [SQLAlchemy](https://www.sqlalchemy.org/) - SQL toolkit and Object Relational Mapper for Python
 * [Alembic](https://alembic.sqlalchemy.org/) - database migration tool for usage with the SQLAlchemy

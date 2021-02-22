@@ -52,7 +52,7 @@ class Worker(Base):
 class TaskType(Base):
     __tablename__ = "task_types"
 
-    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.uuid_generate_v4())
+    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
     name = sa.Column(sa.Text, nullable=False)
     difficulty = sa.Column(
         sa.Numeric(1), sa.CheckConstraint("difficulty BETWEEN 1 AND 3")
@@ -62,7 +62,7 @@ class TaskType(Base):
 class Task(Base):
     __tablename__ = "tasks"
 
-    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.uuid_generate_v4())
+    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
     location = sa.Column(Point)
     time = sa.Column(sa.TIMESTAMP(timezone=True), default=current_timestamp())
     contact = sa.Column(sa.Text)
@@ -89,7 +89,7 @@ class TaskMessage(Base):
 class Report(Base):
     __tablename__ = "reports"
 
-    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.uuid_generate_v4())
+    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
     task_id = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
     worker_id = sa.Column(UUID(), sa.ForeignKey("workers.id"))
     photo = sa.Column(sa.Text)

@@ -27,10 +27,10 @@ cd cradlex
 ```bash
 cp .env.example .env
 ```
-3. Personalize settings by modifying ```.env``` with your preferable text editor. Remove ```INTERNAL_HOST``` and ```DATABASE_HOST``` if you want bot and database running on localhost.
+3. Personalize configuration by modifying ```.env```.
 4. Create a new Telegram bot by talking to [@BotFather](https://t.me/BotFather) and get its API token.
-5. Create a file containing Telegram bot's API token with filename specified in ```TOKEN_FILENAME``` from ```.env``` (example in [secrets/tbtoken](secrets/tbtoken)).
-6. Create a file containing database password with filename specified in ```DATABASE_PASSWORD_FILENAME``` from ```.env``` (example in [secrets/dbpassword](secrets/dbpassword)).
+5. Create a file containing Telegram bot's API token with filename specified in ```TOKEN_FILENAME``` from ```.env```.
+6. Create a file containing database password with filename specified in ```DATABASE_PASSWORD_FILENAME``` from ```.env```.
 7. Install [Docker Compose](https://docs.docker.com/compose/install/) version no less than 1.26.0.
 8. Start container:
 ```bash
@@ -52,16 +52,16 @@ pip install -r requirements.txt
 ```bash
 cp .env.example .env
 ```
-5. Personalize settings by modifying ```.env``` with your preferable text editor. Remove ```INTERNAL_HOST``` and ```DATABASE_HOST``` if you want bot and database running on localhost.
+5. Personalize configuration by modifying ```.env```.
 6. Create a new Telegram bot by talking to [@BotFather](https://t.me/BotFather) and get its API token.
-7. Create a file containing Telegram bot's API token with filename specified in ```TOKEN_FILENAME``` from ```.env``` (example in [secrets/tbtoken](secrets/tbtoken)).
-8. Create a file containing database password with filename specified in ```DATABASE_PASSWORD_FILENAME``` from ```.env``` (example in [secrets/dbpassword](secrets/dbpassword)).
+7. Create a file containing Telegram bot's API token with filename specified in ```TOKEN_FILENAME``` from ```.env```.
+8. Create a file containing database password with filename specified in ```DATABASE_PASSWORD_FILENAME``` from ```.env```.
 9. Install and start [PostgreSQL server](https://www.postgresql.org/download/).
-10. Set environment variables:
+10. Create a role with name specified in ```DATABASE_USERNAME``` from ```.env``` and password specified in ```DATABASE_PASSWORD``` from ```.env```.
+11. Set environment variables:
 ```bash
 export $(sed 's/#.*//' .env | xargs)
 ```
-11. Create database user.
 12. Launch Cradlex:
 ```bash
 python -m cradlex

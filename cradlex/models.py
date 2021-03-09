@@ -1,13 +1,11 @@
 import sqlalchemy as sa
-import sqlalchemy.ext.asyncio
 import sqlalchemy.ext.declarative
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.functions import current_timestamp
-from sqlalchemy.types import UserDefinedType
 
 
-class Point(UserDefinedType):
+class Point(sa.types.UserDefinedType):
     def get_col_spec(self):
         return "point"
 
@@ -30,7 +28,7 @@ Base: sa.ext.declarative.DeclarativeMeta = sa.ext.declarative.declarative_base()
 class User(Base):
     __tablename__ = "users"
 
-    id = sa.Column(sa.Integer, primary_key=True)
+    id = sa.Column(sa.BigInteger, primary_key=True)
     first_name = sa.Column(sa.Text, nullable=False)
     last_name = sa.Column(sa.Text)
     username = sa.Column(sa.Text)
@@ -41,7 +39,7 @@ class User(Base):
 class Worker(Base):
     __tablename__ = "workers"
 
-    id = sa.Column(sa.Integer, sa.ForeignKey("users.id"), primary_key=True)
+    id = sa.Column(sa.BigInteger, sa.ForeignKey("users.id"), primary_key=True)
     name = sa.Column(sa.Text, nullable=False)
     skill = sa.Column(sa.Numeric(1), sa.CheckConstraint("skill BETWEEN 1 AND 3"))
     payment = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
@@ -78,7 +76,7 @@ class Task(Base):
 class TaskMessage(Base):
     __tablename__ = "task_messages"
 
-    id = sa.Column(sa.Integer, primary_key=True)
+    id = sa.Column(sa.BigInteger, primary_key=True)
     task_id = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
     worker_id = sa.Column(sa.Integer, sa.ForeignKey("workers.id"))
 

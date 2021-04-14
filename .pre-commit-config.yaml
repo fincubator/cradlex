@@ -18,6 +18,7 @@ repos:
     rev: v0.812
     hooks:
     -   id: mypy
+        additional_dependencies: ["SQLAlchemy[mypy]"]
 -   repo: https://github.com/pycqa/bandit
     rev: 1.7.0
     hooks:

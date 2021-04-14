@@ -49,21 +49,25 @@ cd cradlex
 ```bash
 pip install -r requirements.txt
 ```
-4. Create environment file from example:
+4. Compile translations:
+```bash
+pybabel compile -d locale/ -D bot
+```
+5. Create environment file from example:
 ```bash
 cp .env.example .env
 ```
-5. Personalize configuration by modifying ```.env```.
-6. Create a new Telegram bot by talking to [@BotFather](https://t.me/BotFather) and get its API token.
-7. Create a file containing Telegram bot's API token with filename specified in ```TOKEN_FILENAME``` from ```.env```.
-8. Create a file containing database password with filename specified in ```DATABASE_PASSWORD_FILENAME``` from ```.env```.
-9. Install and start [PostgreSQL server](https://www.postgresql.org/download/).
-10. Create a role with name specified in ```DATABASE_USERNAME``` from ```.env``` and password specified in ```DATABASE_PASSWORD``` from ```.env```.
-11. Set environment variables:
+6. Personalize configuration by modifying ```.env```.
+7. Create a new Telegram bot by talking to [@BotFather](https://t.me/BotFather) and get its API token.
+8. Create a file containing Telegram bot's API token with filename specified in ```TOKEN_FILENAME``` from ```.env```.
+9. Create a file containing database password with filename specified in ```DATABASE_PASSWORD_FILENAME``` from ```.env```.
+10. Install and start [PostgreSQL server](https://www.postgresql.org/download/).
+11. Create a role with name specified in ```DATABASE_USERNAME``` from ```.env``` and password specified in ```DATABASE_PASSWORD``` from ```.env```.
+12. Set environment variables:
 ```bash
 export $(sed 's/#.*//' .env | xargs)
 ```
-12. Launch Cradlex:
+13. Launch Cradlex:
 ```bash
 python -m cradlex
 ```

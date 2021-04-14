@@ -16,6 +16,9 @@ COPY --chown=999:999 requirements.txt ./
 ENV PATH $PATH:$HOME/.local/bin
 RUN pip install --user --no-cache-dir --requirement requirements.txt
 
+COPY --chown=999:999 locales/ locales/
+RUN pybabel compile --directory=locales/ --domain=cradlex
+
 COPY --chown=999:999 . .
 
 ENTRYPOINT ["python", "-m", "cradlex"]

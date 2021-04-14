@@ -5,21 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.functions import current_timestamp
 
 
-class Point(sa.types.UserDefinedType):
-    def get_col_spec(self):
-        return "point"
-
-    def process_bind_param(self, value, dialect):
-        if value is None:
-            return None
-        lat, lng = value
-        return f"({lng}, {lat})"
-
-    def process_result_value(self, value, dialect):
-        if value is None:
-            return None
-        lng, lat = value
-        return float(lat), float(lng)
+TASK_DIFFICULTY = ("easy", "medium", "hard")
 
 
 Base: sa.ext.declarative.DeclarativeMeta = sa.ext.declarative.declarative_base()
@@ -44,33 +30,26 @@ class Worker(Base):
     skill = sa.Column(sa.Numeric(1), sa.CheckConstraint("skill BETWEEN 1 AND 3"))
     payment = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
 
-    user = sa.orm.relationship(User)
-
 
 class TaskType(Base):
     __tablename__ = "task_types"
 
     id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
     name = sa.Column(sa.Text, nullable=False)
-    difficulty = sa.Column(
-        sa.Numeric(1), sa.CheckConstraint("difficulty BETWEEN 1 AND 3")
-    )
+    difficulty = sa.Column(sa.Enum(*TASK_DIFFICULTY, name="task_difficulty"))
 
 
 class Task(Base):
     __tablename__ = "tasks"
 
     id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
-    location = sa.Column(Point)
+    location = sa.Column(sa.Text)
     time = sa.Column(sa.TIMESTAMP(timezone=True), default=current_timestamp())
     contact = sa.Column(sa.Text)
     type_id = sa.Column(UUID(), sa.ForeignKey("task_types.id"))
     payment = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
     comments = sa.Column(sa.Text)
-    worker_id = sa.Column(sa.Integer, sa.ForeignKey("workers.id"))
-
-    type = sa.orm.relationship(TaskType)
-    worker = sa.orm.relationship(Worker)
+    worker_id = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
 
 
 class TaskMessage(Base):
@@ -78,10 +57,7 @@ class TaskMessage(Base):
 
     id = sa.Column(sa.BigInteger, primary_key=True)
     task_id = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
-    worker_id = sa.Column(sa.Integer, sa.ForeignKey("workers.id"))
-
-    task = sa.orm.relationship(Task)
-    worker = sa.orm.relationship(Worker)
+    worker_id = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
 
 
 class Report(Base):
@@ -89,8 +65,5 @@ class Report(Base):
 
     id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
     task_id = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
-    worker_id = sa.Column(UUID(), sa.ForeignKey("workers.id"))
+    worker_id = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
     photo = sa.Column(sa.Text)
-
-    task = sa.orm.relationship(Task)
-    worker = sa.orm.relationship(Worker)

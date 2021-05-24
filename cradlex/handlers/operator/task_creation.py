@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import re
 import typing
@@ -153,7 +154,7 @@ async def set_task_contact(message: types.Message, state: FSMContext):
 
 @step_handler(TaskCreation.task_type)
 async def task_type_step(message: types.Message, state: FSMContext) -> bool:
-    task_type_result = await utils.parse_task_type(message.text)
+    task_type_result = utils.parse_task_type(message.text)
     if not task_type_result:
         await message.answer(_("task_type_invalid_error"))
         return False
@@ -229,7 +230,7 @@ async def edit_task_start(call: types.CallbackQuery, state: FSMContext):
     await TaskCreation.edit_task.set()
     await call.answer()
     await call.message.edit_text(
-        _("task_editing") + "\n" + utils.task_message_from_lines(lines, numbered=True),
+        _("task_editing") + "\n" + utils.message_from_lines(lines, numbered=True),
         reply_markup=keyboard_markup,
     )
 
@@ -281,6 +282,7 @@ async def broadcast_task(call: types.CallbackQuery, state: FSMContext):
     async with database.sessionmaker() as session:
         async with session.begin():
             session.add(task)
+    asyncio.create_task(utils.broadcast_task(task))
     await state.finish()
     await call.answer()
     await call.message.answer(_("task_broadcasted"))

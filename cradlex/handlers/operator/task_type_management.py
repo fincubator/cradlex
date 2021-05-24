@@ -60,7 +60,7 @@ async def start_type_deletion(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=type_deletion)
 async def finish_type_deletion(message: types.Message, state: FSMContext):
-    task_type_result = await utils.parse_task_type(message.text)
+    task_type_result = utils.parse_task_type(message.text)
     if not task_type_result:
         await message.answer(_("task_type_invalid_error"))
         return False

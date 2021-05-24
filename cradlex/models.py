@@ -1,69 +1,84 @@
+import typing
+from datetime import datetime
+
 import sqlalchemy as sa
 import sqlalchemy.ext.declarative
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.functions import current_timestamp
+from sqlalchemy_utils import PhoneNumberType
 
 
 TASK_DIFFICULTY = ("easy", "medium", "hard")
+WORKER_SKILL = ("no_repair", "simple_repair", "electrical_repair")
 
 
-Base: sa.ext.declarative.DeclarativeMeta = sa.ext.declarative.declarative_base()
+Base = sa.ext.declarative.declarative_base()
 
 
 class User(Base):
     __tablename__ = "users"
 
-    id = sa.Column(sa.BigInteger, primary_key=True)
-    first_name = sa.Column(sa.Text, nullable=False)
-    last_name = sa.Column(sa.Text)
-    username = sa.Column(sa.Text)
-    state = sa.Column(sa.Text)
-    data = sa.Column(JSONB, nullable=False, server_default="{}")
+    id: int = sa.Column(sa.BigInteger, primary_key=True)
+    first_name: str = sa.Column(sa.Text, nullable=False)
+    last_name: str = sa.Column(sa.Text)
+    username: str = sa.Column(sa.Text)
+    state: str = sa.Column(sa.Text)
+    data: typing.Mapping[str, typing.Any] = sa.Column(
+        JSONB, nullable=False, server_default="{}"
+    )
 
 
 class Worker(Base):
     __tablename__ = "workers"
 
-    id = sa.Column(sa.BigInteger, sa.ForeignKey("users.id"), primary_key=True)
-    name = sa.Column(sa.Text, nullable=False)
-    skill = sa.Column(sa.Numeric(1), sa.CheckConstraint("skill BETWEEN 1 AND 3"))
-    payment = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
+    id: int = sa.Column(sa.BigInteger, sa.ForeignKey("users.id"), unique=True)
+    phone: str = sa.Column(PhoneNumberType(region="RU"), primary_key=True)
+    name: str = sa.Column(sa.Text, nullable=False)
+    skill: str = sa.Column(sa.Enum(*WORKER_SKILL, name="worker_skill"), nullable=False)
+    payment: int = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
+    task_id: str = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
 
 
 class TaskType(Base):
     __tablename__ = "task_types"
 
-    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
-    name = sa.Column(sa.Text, nullable=False)
-    difficulty = sa.Column(sa.Enum(*TASK_DIFFICULTY, name="task_difficulty"))
+    id: str = sa.Column(
+        UUID(), primary_key=True, server_default=sa.func.gen_random_uuid()
+    )
+    name: str = sa.Column(sa.Text, nullable=False)
+    difficulty: str = sa.Column(sa.Enum(*TASK_DIFFICULTY, name="task_difficulty"))
 
 
 class Task(Base):
     __tablename__ = "tasks"
 
-    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
-    location = sa.Column(sa.Text)
-    time = sa.Column(sa.TIMESTAMP(timezone=True), default=current_timestamp())
-    contact = sa.Column(sa.Text)
-    type_id = sa.Column(UUID(), sa.ForeignKey("task_types.id"))
-    payment = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
-    comments = sa.Column(sa.Text)
-    worker_id = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
+    id: str = sa.Column(
+        UUID(), primary_key=True, server_default=sa.func.gen_random_uuid()
+    )
+    location: str = sa.Column(sa.Text)
+    time: datetime = sa.Column(sa.TIMESTAMP(timezone=True), default=current_timestamp())
+    contact: str = sa.Column(sa.Text)
+    type_id: str = sa.Column(UUID(), sa.ForeignKey("task_types.id"))
+    payment: int = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
+    comments: str = sa.Column(sa.Text)
+    worker_id: int = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
 
 
 class TaskMessage(Base):
     __tablename__ = "task_messages"
 
-    id = sa.Column(sa.BigInteger, primary_key=True)
-    task_id = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
-    worker_id = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
+    id: int = sa.Column(sa.BigInteger, primary_key=True)
+    task_id: str = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
+    worker_id: int = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
 
 
 class Report(Base):
     __tablename__ = "reports"
 
-    id = sa.Column(UUID(), primary_key=True, server_default=sa.func.gen_random_uuid())
-    task_id = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
-    worker_id = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
-    photo = sa.Column(sa.Text)
+    id: str = sa.Column(
+        UUID(), primary_key=True, server_default=sa.func.gen_random_uuid()
+    )
+    task_id: str = sa.Column(UUID(), sa.ForeignKey("tasks.id"))
+    worker_id: int = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
+    photo: str = sa.Column(sa.Text)

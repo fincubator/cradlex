@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cradlex VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-14 04:38+0300\n"
+"POT-Creation-Date: 2021-05-18 04:25+0300\n"
 "PO-Revision-Date: 2021-04-04 23:38+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -39,9 +39,53 @@ msgstr "Контакт: {contact}"
 msgid "type {type}"
 msgstr "Тип: {type}"
 
+#: cradlex/utils.py
+msgid "without_repair"
+msgstr "Без ремонта"
+
+#: cradlex/utils.py
+msgid "with_simple_repair"
+msgstr "С простым ремонтом"
+
+#: cradlex/utils.py
+msgid "with_electrical_repair"
+msgstr "С электрическим ремонтом"
+
+#: cradlex/utils.py
+msgid "name {name}"
+msgstr "Имя: {name}"
+
+#: cradlex/utils.py
+msgid "phone {phone}"
+msgstr "Телефон: {phone}"
+
+#: cradlex/utils.py
+msgid "skill {skill}"
+msgstr "Навык: {skill}"
+
 #: cradlex/handlers/base.py
 msgid "start_message"
 msgstr "Привет, я Cradlex. Я - ERP бот для маленьких групп рабочих."
+
+#: cradlex/handlers/registration.py
+msgid "send_contact"
+msgstr "Отправить контакт"
+
+#: cradlex/handlers/registration.py
+msgid "first_message"
+msgstr "Привет, я Cradlex. Я - ERP бот для маленьких групп рабочих. Для продолжения отправьте ваш контакт."
+
+#: cradlex/handlers/registration.py
+msgid "worker_not_found"
+msgstr "Вы не найдены в списке рабочих. Обратитесь к оператору и попробуйте ещё раз."
+
+#: cradlex/handlers/registration.py
+msgid "welcome_message"
+msgstr "Добро пожаловать!"
+
+#: cradlex/handlers/registration.py
+msgid "contact_parse_error"
+msgstr "Неверный формат телефона."
 
 #: cradlex/handlers/operator/task_creation.py
 msgid "no_task_types"
@@ -84,12 +128,12 @@ msgid "ask_task_type"
 msgstr "Отправьте тип задачи."
 
 #: cradlex/handlers/operator/task_creation.py
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "task_type_invalid_error"
 msgstr "Неверный формат типа."
 
 #: cradlex/handlers/operator/task_creation.py
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "task_type_not_found_error"
 msgstr "Тип не найден."
 
@@ -134,6 +178,7 @@ msgid "ask_new_type"
 msgstr "Отправьте новый тип."
 
 #: cradlex/handlers/operator/task_creation.py
+#: cradlex/handlers/operator/worker_creation.py
 msgid "unknown_step"
 msgstr "Неизвестный шаг"
 
@@ -141,30 +186,86 @@ msgstr "Неизвестный шаг"
 msgid "task_broadcasted"
 msgstr "Задача передана."
 
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "ask_type_to_create"
 msgstr "Отправьте тип."
 
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "ask_type_difficulty"
 msgstr "Выберите сложность типа."
 
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "unknown_difficulty_error"
 msgstr "Неизвестная сложность. Выберите одну из кнопок на клавиатуре."
 
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "task_type_created"
 msgstr "Тип создан."
 
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "no_types_to_delete"
 msgstr "Нет типов."
 
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "ask_type_to_delete"
 msgstr "Выберите тип."
 
-#: cradlex/handlers/operator/type_creation.py
+#: cradlex/handlers/operator/task_type_management.py
 msgid "task_type_deleted"
 msgstr "Тип удалён."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "ask_worker_name"
+msgstr "Отправьте имя рабочего."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "ask_worker_phone"
+msgstr "Отправьте телефон рабочего."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "phone_parse_error"
+msgstr "Неверный формат телефона."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "ask_worker_skill"
+msgstr "Выберите навык рабочего."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "skill_invalid_error"
+msgstr "Неизвестный навык. Выберите одну из кнопок на клавиатуре."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "edit_worker"
+msgstr "Редактировать"
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "save_worker"
+msgstr "Сохранить"
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "check_worker"
+msgstr "Проверьте рабочего:"
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "cancel_edit_worker"
+msgstr "Отмена"
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "worker_editing"
+msgstr "Выберите шаг для редактирования:"
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "ask_new_name"
+msgstr "Отправьте новое имя."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "ask_new_phone"
+msgstr "Отправьте новый телефон."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "ask_new_skill"
+msgstr "Выберите новый навык."
+
+#: cradlex/handlers/operator/worker_creation.py
+msgid "worker_saved"
+msgstr "Рабочий сохранён."

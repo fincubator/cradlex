@@ -16,7 +16,7 @@ from cradlex.i18n import _
 from cradlex.states import task_photo
 
 
-@dp.callback_query_handler(callback_data.task_timeliness.filter())
+@dp.callback_query_handler(callback_data.take_task.filter())
 async def take_task(
     call: types.CallbackQuery,
     callback_data: typing.Mapping[str, str],

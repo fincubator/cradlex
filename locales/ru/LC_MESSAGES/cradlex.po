@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cradlex VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-05-18 04:25+0300\n"
+"POT-Creation-Date: 2021-05-25 17:51+0300\n"
 "PO-Revision-Date: 2021-04-04 23:38+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -18,6 +18,30 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
+
+#: cradlex/__main__.py
+msgid "on_time"
+msgstr "Буду вовремя"
+
+#: cradlex/__main__.py
+msgid "late"
+msgstr "Опоздаю менее чем на полчаса"
+
+#: cradlex/__main__.py
+msgid "very_late"
+msgstr "Опоздаю более чем на полчаса"
+
+#: cradlex/__main__.py
+msgid "task_done"
+msgstr "Выполнено"
+
+#: cradlex/__main__.py
+msgid "verify_task"
+msgstr "Всё в порядке?"
+
+#: cradlex/__main__.py
+msgid "task_started"
+msgstr "Задача начата. Нажмите на кнопку, когда выполните его."
 
 #: cradlex/utils.py
 msgid "payment {payment}"
@@ -63,6 +87,14 @@ msgstr "Телефон: {phone}"
 msgid "skill {skill}"
 msgstr "Навык: {skill}"
 
+#: cradlex/utils.py
+msgid "new_task"
+msgstr "Новая задача."
+
+#: cradlex/utils.py
+msgid "take_task"
+msgstr "Взять"
+
 #: cradlex/handlers/base.py
 msgid "start_message"
 msgstr "Привет, я Cradlex. Я - ERP бот для маленьких групп рабочих."
@@ -73,11 +105,15 @@ msgstr "Отправить контакт"
 
 #: cradlex/handlers/registration.py
 msgid "first_message"
-msgstr "Привет, я Cradlex. Я - ERP бот для маленьких групп рабочих. Для продолжения отправьте ваш контакт."
+msgstr ""
+"Привет, я Cradlex. Я - ERP бот для маленьких групп рабочих. Для "
+"продолжения отправьте ваш контакт."
 
 #: cradlex/handlers/registration.py
 msgid "worker_not_found"
-msgstr "Вы не найдены в списке рабочих. Обратитесь к оператору и попробуйте ещё раз."
+msgstr ""
+"Вы не найдены в списке рабочих. Обратитесь к оператору и попробуйте ещё "
+"раз."
 
 #: cradlex/handlers/registration.py
 msgid "welcome_message"
@@ -86,6 +122,30 @@ msgstr "Добро пожаловать!"
 #: cradlex/handlers/registration.py
 msgid "contact_parse_error"
 msgstr "Неверный формат телефона."
+
+#: cradlex/handlers/worker.py
+msgid "make_photo"
+msgstr "Сделайте фотографию работы."
+
+#: cradlex/handlers/worker.py
+msgid "bad_job"
+msgstr "Плохая работа"
+
+#: cradlex/handlers/worker.py
+msgid "bad_photo"
+msgstr "Плохая фотография"
+
+#: cradlex/handlers/worker.py
+msgid "good_job"
+msgstr "Хорошая работа"
+
+#: cradlex/handlers/worker.py
+msgid "review_job"
+msgstr "Оцените работу."
+
+#: cradlex/handlers/worker.py
+msgid "photo_forwarded"
+msgstr "Фото переслано оператору."
 
 #: cradlex/handlers/operator/task_creation.py
 msgid "no_task_types"
@@ -147,7 +207,7 @@ msgstr "Передать"
 
 #: cradlex/handlers/operator/task_creation.py
 msgid "check_task"
-msgstr "Проверьте задание:"
+msgstr "Проверьте задачу:"
 
 #: cradlex/handlers/operator/task_creation.py
 msgid "cancel_edit_task"
@@ -185,6 +245,26 @@ msgstr "Неизвестный шаг"
 #: cradlex/handlers/operator/task_creation.py
 msgid "task_broadcasted"
 msgstr "Задача передана."
+
+#: cradlex/handlers/operator/task_review.py
+msgid "task_reviewed"
+msgstr "Задача оценена."
+
+#: cradlex/handlers/operator/task_review.py
+msgid "redo_job"
+msgstr "Переделайте работу и отправьте новую фотографию."
+
+#: cradlex/handlers/operator/task_review.py
+msgid "redo_photo"
+msgstr "Переделайте фотографию и пришлите новую."
+
+#: cradlex/handlers/operator/task_review.py
+msgid "pay_worker"
+msgstr "Заплатите рабочему."
+
+#: cradlex/handlers/operator/task_review.py
+msgid "task_successful"
+msgstr "Задача выполнена."
 
 #: cradlex/handlers/operator/task_type_management.py
 msgid "ask_type_to_create"

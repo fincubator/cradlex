@@ -30,6 +30,7 @@ async def take_task(
                     models.Task.id == callback_data["task_id"],
                     models.Task.worker_id == None,  # noqa: E711
                 )
+                .returning(sa.text("1"))
             )
         if result.one_or_none():
             await call.answer("Вы взяли задание.", show_alert=True)

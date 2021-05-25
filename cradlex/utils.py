@@ -17,7 +17,7 @@ from cradlex.bot import bot
 from cradlex.i18n import _
 
 
-DATE_FORMAT = "%d.%m.%Y %H:%M"
+DATE_FORMAT = "%d.%m %H:%M"
 
 
 def model_to_dict(

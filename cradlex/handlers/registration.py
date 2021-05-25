@@ -53,7 +53,9 @@ async def set_phone(
     content_types=types.ContentType.CONTACT, state=states.Registration.contact
 )
 async def set_phone_from_contact(message: types.Message, state: FSMContext):
-    await set_phone(phonenumbers.parse(message.contact.phone_number), message, state)
+    await set_phone(
+        phonenumbers.parse(message.contact.phone_number, region="RU"), message, state
+    )
 
 
 @dp.message_handler(state=states.Registration.contact)

@@ -28,7 +28,7 @@ async def take_task(
                 .values(worker_id=call.from_user.id)
                 .where(
                     models.Task.id == callback_data["task_id"],
-                    models.Task.worker_id is None,
+                    models.Task.worker_id == None,  # noqa: E711
                 )
             )
         if result.one_or_none():

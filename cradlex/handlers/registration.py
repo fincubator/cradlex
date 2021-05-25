@@ -8,10 +8,11 @@ from cradlex import database
 from cradlex import models
 from cradlex import states
 from cradlex.bot import dp
+from cradlex.filters import OperatorFilter
 from cradlex.i18n import _
 
 
-@dp.message_handler(state=states.Registration.first_message)
+@dp.message_handler(~OperatorFilter(), state=states.Registration.first_message)
 async def first_message(message: types.Message, state: FSMContext):
     keyboard_markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
     keyboard_markup.add(

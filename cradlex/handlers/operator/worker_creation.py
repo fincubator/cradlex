@@ -5,17 +5,16 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import any_state
 from aiogram.dispatcher.filters.state import State
-from aiogram.utils.callback_data import CallbackData
 
+from cradlex import callback_data
 from cradlex import database
 from cradlex import models
 from cradlex import utils
 from cradlex.bot import dp
+from cradlex.filters import OperatorFilter
 from cradlex.i18n import _
 from cradlex.states import WorkerCreation
 
-
-edit_worker_step_cb = CallbackData("edit_worker_step", "step")
 
 step_handlers = {}
 
@@ -28,7 +27,7 @@ def step_handler(state: State):
     return decorator
 
 
-@dp.message_handler(commands=["enter_worker"], state=any_state)
+@dp.message_handler(OperatorFilter(), commands=["enter_worker"], state=any_state)
 async def create_worker(message: types.Message, state: FSMContext):
     await WorkerCreation.name.set()
     await message.answer(_("ask_worker_name"))
@@ -112,7 +111,8 @@ async def check_worker(
 
 
 @dp.callback_query_handler(
-    lambda call: call.data == "cancel_edit_worker", state=WorkerCreation.edit_worker
+    lambda call: call.data == "cancel_edit_worker",
+    state=WorkerCreation.edit_worker,
 )
 async def cancel_edit_worker(call: types.CallbackQuery, state: FSMContext):
     await call.answer()
@@ -120,7 +120,8 @@ async def cancel_edit_worker(call: types.CallbackQuery, state: FSMContext):
 
 
 @dp.callback_query_handler(
-    lambda call: call.data == "edit_worker", state=WorkerCreation.check_worker
+    lambda call: call.data == "edit_worker",
+    state=WorkerCreation.check_worker,
 )
 async def edit_worker_start(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
@@ -129,7 +130,8 @@ async def edit_worker_start(call: types.CallbackQuery, state: FSMContext):
     for i, key in enumerate(lines.keys()):
         buttons.append(
             types.InlineKeyboardButton(
-                str(i + 1), callback_data=edit_worker_step_cb.new(step=key)
+                str(i + 1),
+                callback_data=callback_data.edit_worker_step.new(step=key),
             )
         )
     keyboard_markup = types.InlineKeyboardMarkup()
@@ -148,7 +150,8 @@ async def edit_worker_start(call: types.CallbackQuery, state: FSMContext):
 
 
 @dp.callback_query_handler(
-    edit_worker_step_cb.filter(), state=WorkerCreation.edit_worker
+    callback_data.edit_worker_step.filter(),
+    state=WorkerCreation.edit_worker,
 )
 async def edit_worker_step(
     call: types.CallbackQuery,
@@ -184,7 +187,8 @@ async def edit_worker_finish(message: types.Message, state: FSMContext):
 
 
 @dp.callback_query_handler(
-    lambda call: call.data == "save_worker", state=WorkerCreation.check_worker
+    lambda call: call.data == "save_worker",
+    state=WorkerCreation.check_worker,
 )
 async def save_worker(call: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:

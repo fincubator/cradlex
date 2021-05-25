@@ -1,16 +1,101 @@
 import asyncio
+import datetime
 import logging
 import secrets
 
+import sqlalchemy as sa
+from aiogram import types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
+from sqlalchemy.sql.functions import current_timestamp
 
 import cradlex.handlers  # noqa: F401
+from cradlex import callback_data
 from cradlex import config
+from cradlex import database
+from cradlex import models
 from cradlex.bot import bot
 from cradlex.bot import dp
-from cradlex.database import engine
+from cradlex.i18n import _
 from cradlex.models import Base
+
+
+async def task_loop():
+    timeliness_markup = types.InlineKeyboardMarkup(row_width=1)
+    timeliness_markup.add(
+        types.InlineKeyboardButton(
+            _("on_time"),
+            callback_data=callback_data.task_timeliness.new(
+                timeliness=models.TaskTimeliness.on_time
+            ),
+        ),
+        types.InlineKeyboardButton(
+            _("late"),
+            callback_data=callback_data.task_timeliness.new(
+                timeliness=models.TaskTimeliness.late
+            ),
+        ),
+        types.InlineKeyboardButton(
+            _("very_late"),
+            callback_data=callback_data.task_timeliness.new(
+                timeliness=models.TaskTimeliness.very_late
+            ),
+        ),
+    )
+    start_markup = types.InlineKeyboardMarkup(row_width=1)
+    start_markup.add(
+        types.InlineKeyboardButton(_("task_done"), callback_data="task_done"),
+    )
+    while True:
+        max_time = current_timestamp() + datetime.timedelta(minutes=30)
+        async with database.sessionmaker() as session:
+            async with session.begin():
+                timeliness_ids_cursor = await session.execute(
+                    sa.update(models.Task)
+                    .where(
+                        models.Task.time <= max_time,
+                        models.Task.worker_id != None,  # noqa: E711
+                        models.Task.timeliness == None,  # noqa: E711
+                    )
+                    .values(timeliness=models.TaskTimeliness.unknown)
+                    .returning(models.Task.worker_id)
+                )
+                start_ids_cursor = await session.execute(
+                    sa.update(models.Task)
+                    .where(
+                        models.Task.time <= current_timestamp(),
+                        models.Task.worker_id != None,  # noqa: E711
+                        models.Task.timeliness != None,  # noqa: E711
+                        sa.not_(models.Task.sent),
+                    )
+                    .values(sent=True)
+                    .returning(models.Task.worker_id)
+                )
+                timeliness_ids = timeliness_ids_cursor.scalars().all()
+                start_ids = start_ids_cursor.scalars().all()
+        for timeliness_id in timeliness_ids:
+            try:
+                await bot.send_message(
+                    timeliness_id, _("verify_task"), reply_markup=timeliness_markup
+                )
+            except Exception as error:
+                logging.getLogger(__name__).error(
+                    f"Error verifying task of worker {timeliness_id}: {error}"
+                )
+            else:
+                await asyncio.sleep(0.05)
+        for start_id in start_ids:
+            try:
+                await bot.send_message(
+                    start_id, _("task_started"), reply_markup=start_markup
+                )
+            except Exception as error:
+                logging.getLogger(__name__).error(
+                    f"Error starting task of worker {timeliness_id}: {error}"
+                )
+            else:
+                await asyncio.sleep(0.05)
+        await asyncio.sleep(60)
 
 
 async def on_startup(webhook_path=None, *args):
@@ -18,11 +103,12 @@ async def on_startup(webhook_path=None, *args):
 
     Set webhook and run background tasks.
     """
-    async with engine.begin() as conn:
+    async with database.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     await bot.delete_webhook()
     if webhook_path is not None:
         await bot.set_webhook("https://" + config.SERVER_HOST + webhook_path)
+    asyncio.create_task(task_loop())
 
 
 logging.basicConfig(level=config.LOGGER_LEVEL)

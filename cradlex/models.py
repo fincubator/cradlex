@@ -1,3 +1,4 @@
+import enum
 import typing
 from datetime import datetime
 
@@ -11,6 +12,13 @@ from sqlalchemy_utils import PhoneNumberType
 
 TASK_DIFFICULTY = ("easy", "medium", "hard")
 WORKER_SKILL = ("no_repair", "simple_repair", "electrical_repair")
+
+
+class TaskTimeliness(enum.Enum):
+    unknown = enum.auto()
+    on_time = enum.auto()
+    late = enum.auto()
+    very_late = enum.auto()
 
 
 Base = sa.ext.declarative.declarative_base()
@@ -63,6 +71,8 @@ class Task(Base):
     payment: int = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
     comments: str = sa.Column(sa.Text)
     worker_id: int = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
+    timeliness: TaskTimeliness = sa.Column(sa.Enum(TaskTimeliness))
+    sent: bool = sa.Column(sa.Boolean)
 
 
 class TaskMessage(Base):

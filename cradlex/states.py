@@ -31,3 +31,4 @@ class WorkerCreation(StatesGroup):
 
 
 type_deletion = State("type_deletion")
+task_photo = State("task_photo")

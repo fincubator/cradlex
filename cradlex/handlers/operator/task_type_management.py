@@ -8,12 +8,13 @@ from cradlex import database
 from cradlex import models
 from cradlex import utils
 from cradlex.bot import dp
+from cradlex.filters import OperatorFilter
 from cradlex.i18n import _
 from cradlex.states import type_deletion
 from cradlex.states import TypeCreation
 
 
-@dp.message_handler(commands=["create_type"], state=any_state)
+@dp.message_handler(OperatorFilter(), commands=["create_type"], state=any_state)
 async def start_type_creation(message: types.Message, state: FSMContext):
     await TypeCreation.name.set()
     await message.answer(_("ask_type_to_create"))

@@ -7,9 +7,9 @@ from datetime import datetime
 import phonenumbers
 import sqlalchemy as sa
 from aiogram import types
-from aiogram.utils.callback_data import CallbackData
 from aiogram.utils.emoji import emojize
 
+from cradlex import callback_data
 from cradlex import database
 from cradlex import models
 from cradlex import states
@@ -19,7 +19,11 @@ from cradlex.i18n import _
 
 DATE_FORMAT = "%d.%m.%Y %H:%M"
 
-take_task_cb = CallbackData("take_task", "task_id")
+
+def model_to_dict(
+    model: typing.Union[models.Task, models.Worker]
+) -> typing.Dict[str, typing.Any]:
+    return {col.name: getattr(model, col.name) for col in model.__table__.columns}
 
 
 def message_from_lines(lines: typing.Mapping[str, str], numbered: bool = False) -> str:
@@ -90,7 +94,13 @@ async def task_message_lines(
     }
 
 
-async def task_message(task: typing.Mapping[str, typing.Any]) -> str:
+async def task_message(
+    task: typing.Union[typing.Mapping[str, typing.Any], models.Task, sa.engine.Row]
+) -> str:
+    if isinstance(task, models.Task):
+        task = model_to_dict(task)
+    elif isinstance(task, sa.engine.Row):
+        task = task._mapping
     return message_from_lines(await task_message_lines(task))
 
 
@@ -123,7 +133,13 @@ async def worker_message_lines(
     }
 
 
-async def worker_message(worker: typing.Mapping[str, typing.Any]) -> str:
+async def worker_message(
+    worker: typing.Union[typing.Mapping[str, typing.Any], models.Worker, sa.engine.Row]
+) -> str:
+    if isinstance(worker, models.Worker):
+        worker = model_to_dict(worker)
+    elif isinstance(worker, sa.engine.Row):
+        worker = worker._mapping
     return message_from_lines(await worker_message_lines(worker))
 
 
@@ -135,23 +151,36 @@ async def broadcast_task(task: models.Task) -> None:
                     models.Worker.task_id == None  # noqa: E711
                 )
             )
-            worker_ids = worker_ids_cursor.all()
-    message = _("new_task")
-    message += "\n" + await task_message(
-        {col.name: getattr(task, col.name) for col in task.__table__.columns}
-    )
+            worker_ids = worker_ids_cursor.scalars().all()
+    text = _("new_task") + "\n" + await task_message(task)
     keyboard_markup = types.InlineKeyboardMarkup()
     keyboard_markup.row(
         types.InlineKeyboardButton(
-            _("take_task"), callback_data=take_task_cb.new(task_id=task.id)
+            _("take_task"),
+            callback_data=callback_data.take_task.new(task_id=task.id),
         )
     )
-    for worker_id in worker_ids:
-        for user_id in worker_ids:
-            try:
-                await bot.send_message(user_id, message, reply_markup=keyboard_markup)
-                await asyncio.sleep(0.05)
-            except Exception as error:
-                logging.getLogger(__name__).error(
-                    f"Error sending task {task.id} to worker {user_id}: {error}"
-                )
+    async with database.sessionmaker() as session:
+        async with session.begin():
+            for worker_id in worker_ids:
+                try:
+                    message = await bot.send_message(
+                        worker_id, text, reply_markup=keyboard_markup
+                    )
+                    session.add(
+                        models.TaskMessage(
+                            id=message.message_id, task_id=task.id, worker_id=worker_id
+                        )
+                    )
+                except Exception as error:
+                    logging.getLogger(__name__).error(
+                        f"Error sending task {task.id} to worker {worker_id}: {error}"
+                    )
+                else:
+                    await asyncio.sleep(0.05)
+
+
+async def delete_task_messages(rows: typing.Iterable[sa.engine.Row]) -> None:
+    for row in rows:
+        await bot.delete_message(chat_id=row.worker_id, message_id=row.id)
+        await asyncio.sleep(0.05)

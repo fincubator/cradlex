@@ -9,17 +9,16 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import any_state
 from aiogram.dispatcher.filters.state import State
-from aiogram.utils.callback_data import CallbackData
 
+from cradlex import callback_data
 from cradlex import database
 from cradlex import models
 from cradlex import utils
 from cradlex.bot import dp
+from cradlex.filters import OperatorFilter
 from cradlex.i18n import _
 from cradlex.states import TaskCreation
 
-
-edit_task_step_cb = CallbackData("edit_task_step", "step")
 
 step_handlers = {}
 
@@ -32,7 +31,7 @@ def step_handler(state: State):
     return decorator
 
 
-@dp.message_handler(commands=["create_task"], state=any_state)
+@dp.message_handler(OperatorFilter(), commands=["create_task"], state=any_state)
 async def create_task(message: types.Message, state: FSMContext):
     keyboard_markup = await utils.get_task_types_keyboard()
     if not keyboard_markup.keyboard:
@@ -200,7 +199,8 @@ async def check_task(
 
 
 @dp.callback_query_handler(
-    lambda call: call.data == "cancel_edit_task", state=TaskCreation.edit_task
+    lambda call: call.data == "cancel_edit_task",
+    state=TaskCreation.edit_task,
 )
 async def cancel_edit_task(call: types.CallbackQuery, state: FSMContext):
     await call.answer()
@@ -208,7 +208,8 @@ async def cancel_edit_task(call: types.CallbackQuery, state: FSMContext):
 
 
 @dp.callback_query_handler(
-    lambda call: call.data == "edit_task", state=TaskCreation.check_task
+    lambda call: call.data == "edit_task",
+    state=TaskCreation.check_task,
 )
 async def edit_task_start(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
@@ -217,7 +218,7 @@ async def edit_task_start(call: types.CallbackQuery, state: FSMContext):
     for i, key in enumerate(lines.keys()):
         buttons.append(
             types.InlineKeyboardButton(
-                str(i + 1), callback_data=edit_task_step_cb.new(step=key)
+                str(i + 1), callback_data=callback_data.edit_task_step.new(step=key)
             )
         )
     keyboard_markup = types.InlineKeyboardMarkup()
@@ -235,7 +236,10 @@ async def edit_task_start(call: types.CallbackQuery, state: FSMContext):
     )
 
 
-@dp.callback_query_handler(edit_task_step_cb.filter(), state=TaskCreation.edit_task)
+@dp.callback_query_handler(
+    callback_data.edit_task_step.filter(),
+    state=TaskCreation.edit_task,
+)
 async def edit_task_step(
     call: types.CallbackQuery,
     callback_data: typing.Mapping[str, str],
@@ -268,7 +272,8 @@ async def edit_task_finish(message: types.Message, state: FSMContext):
 
 
 @dp.callback_query_handler(
-    lambda call: call.data == "broadcast_task", state=TaskCreation.check_task
+    lambda call: call.data == "broadcast_task",
+    state=TaskCreation.check_task,
 )
 async def broadcast_task(call: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:

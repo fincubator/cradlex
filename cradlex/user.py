@@ -2,6 +2,7 @@ import sqlalchemy as sa
 from aiogram import types
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
+from cradlex import config
 from cradlex import database
 from cradlex import models
 from cradlex import states
@@ -20,8 +21,9 @@ class UserMiddleware(BaseMiddleware):
                 first_name=update_user.first_name,
                 last_name=update_user.last_name,
                 username=update_user.username,
-                state=states.Registration.first_message.state,
             )
+            if update_user.id != config.OPERATOR_ID:
+                database_user.state = states.Registration.first_message.state
             async with database.sessionmaker() as session:
                 async with session.begin():
                     update_result = await session.execute(

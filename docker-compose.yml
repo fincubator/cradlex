@@ -27,3 +27,5 @@ services:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     volumes:
       - ${DATABASE_PASSWORD_FILENAME}:${DATABASE_PASSWORD_FILENAME}:ro
+      - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh:ro
+      - ./data:/var/lib/postgresql/data

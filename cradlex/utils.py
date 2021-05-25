@@ -78,11 +78,13 @@ async def task_message_lines(
                 sa.select(models.TaskType).where(models.TaskType.id == task["type_id"])
             )
             task_type_scalar = task_type_cursor.scalar_one()
+    if isinstance(task["time"], str):
+        task_time = datetime.fromisoformat(task["time"])
+    else:
+        task_time = task["time"]
     payment = _("payment {payment}").format(payment=task["payment"])
     location = _("location {location}").format(location=task["location"])
-    time = _("time {time}").format(
-        time=datetime.fromisoformat(task["time"]).strftime(DATE_FORMAT)
-    )
+    time = _("time {time}").format(time=task_time.strftime(DATE_FORMAT))
     contact = _("contact {contact}").format(contact=task["contact"])
     task_type = _("type {type}").format(type=task_string(task_type_scalar))
     return {

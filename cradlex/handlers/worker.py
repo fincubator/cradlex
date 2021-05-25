@@ -33,7 +33,7 @@ async def take_task(
                 .returning(sa.text("1"))
             )
         if result.one_or_none():
-            await call.answer("Вы взяли задание.", show_alert=True)
+            await call.answer(_("task_taken"), show_alert=True)
             await call.message.delete_reply_markup()
             async with session.begin():
                 messages_to_delete = await session.execute(
@@ -46,7 +46,7 @@ async def take_task(
                 )
             asyncio.create_task(utils.delete_task_messages(messages_to_delete.all()))
         else:
-            await call.answer("Вы уже не можете взять это задание.")
+            await call.answer(_("take_task_error"))
             await call.message.delete()
             return
 

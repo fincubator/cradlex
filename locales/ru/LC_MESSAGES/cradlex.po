@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cradlex VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-05-25 17:51+0300\n"
+"POT-Creation-Date: 2021-05-26 01:08+0300\n"
 "PO-Revision-Date: 2021-04-04 23:38+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -122,6 +122,14 @@ msgstr "Добро пожаловать!"
 #: cradlex/handlers/registration.py
 msgid "contact_parse_error"
 msgstr "Неверный формат телефона."
+
+#: cradlex/handlers/worker.py
+msgid "task_taken"
+msgstr "Вы взяли задачу."
+
+#: cradlex/handlers/worker.py
+msgid "take_task_error"
+msgstr "Вы уже не можете взять это задание."
 
 #: cradlex/handlers/worker.py
 msgid "make_photo"

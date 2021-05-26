@@ -48,7 +48,7 @@ async def take_task(
                 )
             asyncio.create_task(utils.delete_task_messages(messages_to_delete.all()))
         else:
-            await call.answer(_("take_task_error"))
+            await call.answer(_("take_task_error"), show_alert=True)
             await call.message.delete()
             return
 

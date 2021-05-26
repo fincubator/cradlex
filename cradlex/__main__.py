@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import functools
 import logging
 import secrets
 
@@ -7,7 +8,6 @@ import sqlalchemy as sa
 from aiogram import types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
-from sqlalchemy.sql.functions import current_timestamp
 
 import cradlex.handlers  # noqa: F401
 from cradlex import callback_data
@@ -26,19 +26,19 @@ async def task_loop():
         types.InlineKeyboardButton(
             _("on_time"),
             callback_data=callback_data.task_timeliness.new(
-                timeliness=models.TaskTimeliness.on_time
+                timeliness=models.TaskTimeliness.on_time.name
             ),
         ),
         types.InlineKeyboardButton(
             _("late"),
             callback_data=callback_data.task_timeliness.new(
-                timeliness=models.TaskTimeliness.late
+                timeliness=models.TaskTimeliness.late.name
             ),
         ),
         types.InlineKeyboardButton(
             _("very_late"),
             callback_data=callback_data.task_timeliness.new(
-                timeliness=models.TaskTimeliness.very_late
+                timeliness=models.TaskTimeliness.very_late.name
             ),
         ),
     )
@@ -47,7 +47,7 @@ async def task_loop():
         types.InlineKeyboardButton(_("task_done"), callback_data="task_done"),
     )
     while True:
-        max_time = current_timestamp() + datetime.timedelta(minutes=30)
+        max_time = sa.func.current_timestamp() + datetime.timedelta(minutes=30)
         async with database.sessionmaker() as session:
             async with session.begin():
                 timeliness_ids_cursor = await session.execute(
@@ -59,17 +59,19 @@ async def task_loop():
                     )
                     .values(timeliness=models.TaskTimeliness.unknown)
                     .returning(models.Task.worker_id)
+                    .execution_options(synchronize_session=False)
                 )
                 start_ids_cursor = await session.execute(
                     sa.update(models.Task)
                     .where(
-                        models.Task.time <= current_timestamp(),
+                        models.Task.time <= sa.func.current_timestamp(),
                         models.Task.worker_id != None,  # noqa: E711
                         models.Task.timeliness != None,  # noqa: E711
                         sa.not_(models.Task.sent),
                     )
                     .values(sent=True)
                     .returning(models.Task.worker_id)
+                    .execution_options(synchronize_session=False)
                 )
                 timeliness_ids = timeliness_ids_cursor.scalars().all()
                 start_ids = start_ids_cursor.scalars().all()
@@ -98,7 +100,7 @@ async def task_loop():
         await asyncio.sleep(60)
 
 
-async def on_startup(webhook_path=None, *args):
+async def on_startup(*args, webhook_path=None):
     """Prepare bot before starting.
 
     Set webhook and run background tasks.
@@ -121,12 +123,14 @@ if config.SET_WEBHOOK:
     executor.start_webhook(
         dispatcher=dp,
         webhook_path=webhook_path,
-        on_startup=lambda *args: on_startup(webhook_path, *args),
+        on_startup=functools.partial(on_startup, webhook_path=webhook_path),
         host=config.INTERNAL_HOST,
         port=config.SERVER_PORT,
     )
 else:
-    executor.start_polling(dispatcher=dp, skip_updates=config.SKIP_UPDATES)
+    executor.start_polling(
+        dispatcher=dp, on_startup=on_startup, skip_updates=config.SKIP_UPDATES
+    )
 print()  # noqa: T001  Executor stopped with ^C
 
 # Stop all background tasks

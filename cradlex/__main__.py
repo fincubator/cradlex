@@ -17,7 +17,6 @@ from cradlex import models
 from cradlex.bot import bot
 from cradlex.bot import dp
 from cradlex.i18n import _
-from cradlex.models import Base
 
 
 async def task_loop():
@@ -105,8 +104,6 @@ async def on_startup(*args, webhook_path=None):
 
     Set webhook and run background tasks.
     """
-    async with database.engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
     await bot.delete_webhook()
     if webhook_path is not None:
         await bot.set_webhook("https://" + config.SERVER_HOST + webhook_path)

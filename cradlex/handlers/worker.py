@@ -4,6 +4,7 @@ import typing
 import sqlalchemy as sa
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from sqlalchemy.sql.functions import current_timestamp
 
 from cradlex import callback_data
 from cradlex import config
@@ -29,6 +30,7 @@ async def take_task(
                 .where(
                     models.Task.id == callback_data["task_id"],
                     models.Task.worker_id == None,  # noqa: E711
+                    models.Task.time < current_timestamp(),
                 )
                 .returning(sa.text("1"))
             )

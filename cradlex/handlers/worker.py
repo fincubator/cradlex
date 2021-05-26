@@ -33,6 +33,7 @@ async def take_task(
                     models.Task.time < current_timestamp(),
                 )
                 .returning(sa.text("1"))
+                .execution_options(synchronize_session=False)
             )
         if result.one_or_none():
             await call.answer(_("task_taken"), show_alert=True)

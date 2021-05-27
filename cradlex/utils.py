@@ -120,9 +120,13 @@ async def worker_message_lines(
     worker: typing.Mapping[str, typing.Any]
 ) -> typing.Dict[str, str]:
     name = _("name {name}").format(name=worker["name"])
+    if isinstance(worker["phone"], phonenumbers.PhoneNumber):
+        worker_phone = worker["phone"]
+    else:
+        worker_phone = phonenumbers.parse(worker["phone"])
     phone = _("phone {phone}").format(
         phone=phonenumbers.format_number(
-            phonenumbers.parse(worker["phone"]),
+            worker_phone,
             phonenumbers.PhoneNumberFormat.INTERNATIONAL,
         )
     )

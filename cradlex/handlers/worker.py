@@ -69,8 +69,8 @@ async def verify_task(
     await call.message.delete_reply_markup()
 
 
-@dp.callback_query_handler(lambda call: call.data == "finish_task")
-async def finish_task(call: types.CallbackQuery):
+@dp.callback_query_handler(lambda call: call.data == "task_done")
+async def task_done(call: types.CallbackQuery):
     await task_photo.set()
     await call.answer()
     await call.message.answer(_("make_photo"))

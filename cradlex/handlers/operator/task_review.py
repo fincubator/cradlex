@@ -22,7 +22,7 @@ async def review_task(
         async with session.begin():
             worker_cursor = await session.execute(
                 sa.select(models.Worker)
-                .join(models.Task)
+                .join(models.Task, onclause=models.Worker.id == models.Task.worker_id)
                 .where(models.Task.id == callback_data["task_id"])
             )
             worker = worker_cursor.one()

@@ -1,4 +1,4 @@
-aiogram==2.11.2
+aiogram==2.13
 alembic==1.6.4
 asyncpg==0.22.0
 emoji==1.2.0

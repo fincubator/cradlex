@@ -102,7 +102,7 @@ async def task_message(
     if isinstance(task, models.Task):
         task = model_to_dict(task)
     elif isinstance(task, sa.engine.Row):
-        task = task._mapping
+        task = model_to_dict(task._mapping["Task"])
     return message_from_lines(await task_message_lines(task))
 
 
@@ -141,7 +141,7 @@ async def worker_message(
     if isinstance(worker, models.Worker):
         worker = model_to_dict(worker)
     elif isinstance(worker, sa.engine.Row):
-        worker = worker._mapping
+        worker = model_to_dict(worker._mapping["Worker"])
     return message_from_lines(await worker_message_lines(worker))
 
 

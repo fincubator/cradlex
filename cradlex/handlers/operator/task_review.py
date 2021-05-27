@@ -43,5 +43,5 @@ async def review_task(
         return
     if redo:
         await dp.storage.set_state(user=worker.id, state=states.task_photo.state)
-    await call.message.answer(call.from_user.id, operator_answer)
+    await call.message.answer(operator_answer)
     await bot.send_message(worker.id, worker_answer)

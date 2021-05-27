@@ -1,4 +1,4 @@
 pre-commit==2.10.1
 pytest==6.2.2
 pytest-asyncio==0.14.0
-SQLAlchemy[mypy]==1.4.0b1
+SQLAlchemy[mypy]==1.4.15

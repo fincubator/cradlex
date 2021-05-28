@@ -72,7 +72,7 @@ class Task(Base):
     comments: str = sa.Column(sa.Text)
     worker_id: int = sa.Column(sa.BigInteger, sa.ForeignKey("workers.id"))
     timeliness: TaskTimeliness = sa.Column(sa.Enum(TaskTimeliness))
-    sent: bool = sa.Column(sa.Boolean)
+    sent: bool = sa.Column(sa.Boolean, nullable=False, server_default=sa.false())
 
 
 class TaskMessage(Base):

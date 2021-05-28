@@ -25,7 +25,7 @@ async def review_task(
                 .join(models.Task, onclause=models.Worker.id == models.Task.worker_id)
                 .where(models.Task.id == callback_data["task_id"])
             )
-            worker = worker_cursor.one()
+            worker = worker_cursor.one()[0]
     await call.answer()
     review = callback_data["review"]
     redo = True

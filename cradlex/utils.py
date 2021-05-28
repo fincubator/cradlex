@@ -97,12 +97,10 @@ async def task_message_lines(
 
 
 async def task_message(
-    task: typing.Union[typing.Mapping[str, typing.Any], models.Task, sa.engine.Row]
+    task: typing.Union[typing.Mapping[str, typing.Any], models.Task]
 ) -> str:
     if isinstance(task, models.Task):
         task = model_to_dict(task)
-    elif isinstance(task, sa.engine.Row):
-        task = model_to_dict(task._mapping["Task"])
     return message_from_lines(await task_message_lines(task))
 
 
@@ -140,12 +138,10 @@ async def worker_message_lines(
 
 
 async def worker_message(
-    worker: typing.Union[typing.Mapping[str, typing.Any], models.Worker, sa.engine.Row]
+    worker: typing.Union[typing.Mapping[str, typing.Any], models.Worker]
 ) -> str:
     if isinstance(worker, models.Worker):
         worker = model_to_dict(worker)
-    elif isinstance(worker, sa.engine.Row):
-        worker = model_to_dict(worker._mapping["Worker"])
     return message_from_lines(await worker_message_lines(worker))
 
 

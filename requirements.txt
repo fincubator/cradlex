@@ -2,6 +2,6 @@ aiogram==2.11.2
 alembic==1.6.4
 asyncpg==0.22.0
 emoji==1.2.0
-phonenumbers==8.12.23
+phonenumbers==8.12.24
 SQLAlchemy==1.4.15
 sqlalchemy-utils==0.37.3

@@ -67,6 +67,7 @@ class Task(Base):
     location: str = sa.Column(sa.Text)
     time: datetime = sa.Column(sa.TIMESTAMP(timezone=True), default=current_timestamp())
     contact: str = sa.Column(sa.Text)
+    comment: str = sa.Column(sa.Text)
     type_id: str = sa.Column(UUID(), sa.ForeignKey("task_types.id"))
     payment: int = sa.Column(sa.Integer, sa.CheckConstraint("payment > 0"))
     comments: str = sa.Column(sa.Text)

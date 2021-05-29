@@ -141,7 +141,20 @@ async def contact_step(message: types.Message, state: FSMContext) -> bool:
 
 @dp.message_handler(state=TaskCreation.contact)
 async def set_task_contact(message: types.Message, state: FSMContext):
-    if not await contact_step(message, state):
+    if await contact_step(message, state):
+        await TaskCreation.comment.set()
+        await message.answer(_("ask_task_comment"))
+
+
+@step_handler(TaskCreation.comment)
+async def comment_step(message: types.Message, state: FSMContext) -> bool:
+    await state.update_data(comment=message.text)
+    return True
+
+
+@dp.message_handler(state=TaskCreation.comment)
+async def set_task_comment(message: types.Message, state: FSMContext):
+    if not await comment_step(message, state):
         return
     keyboard_markup = await utils.get_task_types_keyboard()
     if not keyboard_markup.keyboard:
@@ -254,6 +267,8 @@ async def edit_task_step(
         answer = _("ask_new_time")
     elif step == TaskCreation.contact._state:
         answer = _("ask_new_contact")
+    elif step == TaskCreation.comment._state:
+        answer = _("ask_new_comment")
     elif step == TaskCreation.task_type._state:
         answer = _("ask_new_type")
     else:
@@ -281,6 +296,7 @@ async def broadcast_task(call: types.CallbackQuery, state: FSMContext):
             location=data["location"],
             time=datetime.datetime.fromisoformat(data["time"]),
             contact=data["contact"],
+            comment=data["comment"],
             type_id=data["type_id"],
             payment=data["payment"],
         )

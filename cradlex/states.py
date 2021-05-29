@@ -12,6 +12,7 @@ class TaskCreation(StatesGroup):
     location = State()
     time = State()
     contact = State()
+    comment = State()
     task_type = State()
     check_task = State()
     edit_task = State()

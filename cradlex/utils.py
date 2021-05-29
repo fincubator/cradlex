@@ -86,12 +86,14 @@ async def task_message_lines(
     location = _("location {location}").format(location=task["location"])
     time = _("time {time}").format(time=task_time.strftime(DATE_FORMAT))
     contact = _("contact {contact}").format(contact=task["contact"])
+    comment = _("comment {comment}").format(comment=task["comment"])
     task_type = _("type {type}").format(type=task_string(task_type_scalar))
     return {
         states.TaskCreation.payment._state: payment,
         states.TaskCreation.location._state: location,
         states.TaskCreation.time._state: time,
         states.TaskCreation.contact._state: contact,
+        states.TaskCreation.comment._state: comment,
         states.TaskCreation.task_type._state: task_type,
     }
 

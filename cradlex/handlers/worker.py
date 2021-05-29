@@ -63,20 +63,21 @@ async def take_task(
         await call.message.delete()
 
 
-@dp.callback_query_handler(callback_data.task_timeliness.filter())
-async def verify_task(
-    call: types.CallbackQuery,
-    callback_data: typing.Mapping[str, str],
-):
+@dp.message_handler(
+    lambda m: any(m.text.startswith(c) for c in models.TASK_TIMELINESS.values() if c)
+)
+async def verify_task(message: types.Message, state: FSMContext):
+    for timeliness, clock in models.TASK_TIMELINESS.items():
+        if clock and message.text.startswith(clock):
+            break
     async with database.sessionmaker() as session:
         async with session.begin():
             await session.execute(
                 sa.update(models.Task)
-                .values(timeliness=callback_data["timeliness"])
-                .where(models.Task.worker_id == call.from_user.id)
+                .values(timeliness=timeliness)
+                .where(models.Task.worker_id == message.from_user.id)
             )
-    await call.answer("task_verified")
-    await call.message.delete_reply_markup()
+    await message.answer(_("task_verified"))
 
 
 @dp.callback_query_handler(lambda call: call.data == "task_done")

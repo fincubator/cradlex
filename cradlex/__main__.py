@@ -10,7 +10,6 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 
 import cradlex.handlers  # noqa: F401
-from cradlex import callback_data
 from cradlex import config
 from cradlex import database
 from cradlex import models
@@ -20,25 +19,12 @@ from cradlex.i18n import _
 
 
 async def task_loop():
-    timeliness_markup = types.InlineKeyboardMarkup(row_width=1)
+    timeliness_markup = types.ReplyKeyboardMarkup(row_width=1)
     timeliness_markup.add(
-        types.InlineKeyboardButton(
-            _("on_time"),
-            callback_data=callback_data.task_timeliness.new(
-                timeliness=models.TaskTimeliness.on_time.name
-            ),
-        ),
-        types.InlineKeyboardButton(
-            _("late"),
-            callback_data=callback_data.task_timeliness.new(
-                timeliness=models.TaskTimeliness.late.name
-            ),
-        ),
-        types.InlineKeyboardButton(
-            _("very_late"),
-            callback_data=callback_data.task_timeliness.new(
-                timeliness=models.TaskTimeliness.very_late.name
-            ),
+        types.KeyboardButton(models.TASK_TIMELINESS["on_time"] + " " + _("on_time")),
+        types.KeyboardButton(models.TASK_TIMELINESS["late"] + " " + _("late")),
+        types.KeyboardButton(
+            models.TASK_TIMELINESS["very_late"] + " " + _("very_late")
         ),
     )
     start_markup = types.InlineKeyboardMarkup(row_width=1)
@@ -56,7 +42,7 @@ async def task_loop():
                         models.Task.worker_id != None,  # noqa: E711
                         models.Task.timeliness == None,  # noqa: E711
                     )
-                    .values(timeliness=models.TaskTimeliness.unknown)
+                    .values(timeliness="unknown")
                     .returning(models.Task.worker_id)
                     .execution_options(synchronize_session=False)
                 )

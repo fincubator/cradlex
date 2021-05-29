@@ -150,9 +150,16 @@ async def worker_message(
 async def broadcast_task(task: models.Task) -> None:
     async with database.sessionmaker() as session:
         async with session.begin():
+            task_difficulty = await session.scalar(
+                sa.select(models.TaskType.difficulty).where(
+                    models.TaskType.id == task.type_id
+                )
+            )
+            skill_index = models.TASK_DIFFICULTY.index(task_difficulty)
             worker_ids_cursor = await session.execute(
                 sa.select(models.Worker.id).where(
-                    models.Worker.task_id == None  # noqa: E711
+                    models.Worker.task_id == None,  # noqa: E711
+                    models.Worker.skill == models.WORKER_SKILL[skill_index],
                 )
             )
             worker_ids = worker_ids_cursor.scalars().all()

@@ -29,7 +29,7 @@ async def set_phone(
 ):
     async with database.sessionmaker() as session:
         async with session.begin():
-            update_result = await session.execute(
+            worker_cursor = await session.execute(
                 sa.update(models.Worker)
                 .where(
                     models.Worker.phone
@@ -38,14 +38,16 @@ async def set_phone(
                     ),
                 )
                 .values(id=message.from_user.id)
-                .returning(sa.text("1"))
+                .returning(models.Worker.name)
             )
-    if not update_result.one_or_none():
+            worker = worker_cursor.one_or_none()
+    if worker is None:
         await message.answer(_("worker_not_found"))
     else:
         await state.finish()
         await message.answer(
-            _("welcome_message"), reply_markup=types.ReplyKeyboardRemove()
+            _("welcome_message {name}").format(worker.name),
+            reply_markup=types.ReplyKeyboardRemove(),
         )
 
 

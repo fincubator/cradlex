@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cradlex VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-05-29 21:23+0300\n"
+"POT-Creation-Date: 2021-05-29 22:48+0300\n"
 "PO-Revision-Date: 2021-04-04 23:38+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -116,8 +116,8 @@ msgstr ""
 "раз."
 
 #: cradlex/handlers/registration.py
-msgid "welcome_message"
-msgstr "Добро пожаловать!"
+msgid "welcome_message {name}"
+msgstr "{name}, регистрация прошла успешно! Ждите задачи."
 
 #: cradlex/handlers/registration.py
 msgid "contact_parse_error"
@@ -365,6 +365,3 @@ msgstr "Выберите новый навык."
 #: cradlex/handlers/operator/worker_creation.py
 msgid "worker_saved"
 msgstr "Рабочий сохранён."
-
-#~ msgid "take_task_error"
-#~ msgstr "Вы уже не можете взять это задание."

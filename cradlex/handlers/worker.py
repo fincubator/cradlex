@@ -23,21 +23,30 @@ async def take_task(
 ):
     async with database.sessionmaker() as session:
         async with session.begin():
-            result = await session.execute(
-                sa.update(models.Task)
-                .values(worker_id=call.from_user.id)
-                .where(
-                    models.Task.id == callback_data["task_id"],
-                    models.Task.worker_id == None,  # noqa: E711
-                    models.Task.time > sa.func.current_timestamp(),
+            vacant = models.Task.worker_id == None  # noqa: E711
+            unexpired = models.Task.time > sa.func.current_timestamp()
+            task_properties_cursor = await session.execute(
+                sa.select(
+                    vacant.label("vacant"), unexpired.label("unexpired")  # type: ignore
                 )
-                .returning(sa.text("1"))
+                .where(models.Task.id == callback_data["task_id"])
                 .execution_options(synchronize_session=False)
             )
-        if result.one_or_none():
-            await call.answer(_("task_taken"), show_alert=True)
-            await call.message.delete_reply_markup()
-            async with session.begin():
+            task_properties = task_properties_cursor.one_or_none()
+            if not task_properties:
+                error = _("task_not_exists_error")
+            elif not task_properties.vacant:
+                error = _("task_already_taken_error")
+            elif not task_properties.unexpired:
+                error = _("task_expired_error")
+            else:
+                await session.execute(
+                    sa.update(models.Task)
+                    .values(worker_id=call.from_user.id)
+                    .where(models.Task.id == callback_data["task_id"])
+                )
+                await call.answer(_("task_taken"), show_alert=True)
+                await call.message.delete_reply_markup()
                 messages_to_delete = await session.execute(
                     sa.delete(models.TaskMessage)
                     .where(
@@ -46,11 +55,12 @@ async def take_task(
                     )
                     .returning(models.TaskMessage.worker_id, models.TaskMessage.id)
                 )
-            asyncio.create_task(utils.delete_task_messages(messages_to_delete.all()))
-        else:
-            await call.answer(_("take_task_error"), show_alert=True)
-            await call.message.delete()
-            return
+                asyncio.create_task(
+                    utils.delete_task_messages(messages_to_delete.all())
+                )
+                return
+        await call.answer(error, show_alert=True)
+        await call.message.delete()
 
 
 @dp.callback_query_handler(callback_data.task_timeliness.filter())

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cradlex VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-05-26 01:08+0300\n"
+"POT-Creation-Date: 2021-05-29 21:23+0300\n"
 "PO-Revision-Date: 2021-04-04 23:38+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -124,12 +124,20 @@ msgid "contact_parse_error"
 msgstr "Неверный формат телефона."
 
 #: cradlex/handlers/worker.py
-msgid "task_taken"
-msgstr "Вы взяли задачу."
+msgid "task_not_exists_error"
+msgstr "Задача не существует."
 
 #: cradlex/handlers/worker.py
-msgid "take_task_error"
-msgstr "Вы уже не можете взять это задание."
+msgid "task_already_taken_error"
+msgstr "Задачу уже взяли, будьте быстрее!"
+
+#: cradlex/handlers/worker.py
+msgid "task_expired_error"
+msgstr "Время задачи уже прошло."
+
+#: cradlex/handlers/worker.py
+msgid "task_taken"
+msgstr "Вы взяли задачу."
 
 #: cradlex/handlers/worker.py
 msgid "make_photo"
@@ -357,3 +365,6 @@ msgstr "Выберите новый навык."
 #: cradlex/handlers/operator/worker_creation.py
 msgid "worker_saved"
 msgstr "Рабочий сохранён."
+
+#~ msgid "take_task_error"
+#~ msgstr "Вы уже не можете взять это задание."

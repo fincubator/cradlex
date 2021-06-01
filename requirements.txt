@@ -4,4 +4,4 @@ asyncpg==0.23.0
 emoji==1.2.0
 phonenumbers==8.12.24
 SQLAlchemy==1.4.15
-sqlalchemy-utils==0.37.4
+sqlalchemy-utils==0.37.5

@@ -147,14 +147,15 @@ async def worker_message(
     return message_from_lines(await worker_message_lines(worker))
 
 
-async def broadcast_task(task: models.Task) -> None:
+async def broadcast_task(task_id: str) -> None:
     async with database.sessionmaker() as session:
         async with session.begin():
-            task_difficulty = await session.scalar(
-                sa.select(models.TaskType.difficulty).where(
-                    models.TaskType.id == task.type_id
-                )
+            task_cursor = await session.execute(
+                sa.select(models.Task, models.TaskType.difficulty)
+                .join(models.TaskType)
+                .where(models.Task.id == task_id)
             )
+            task, task_difficulty = task_cursor.one()
             skill_index = models.TASK_DIFFICULTY.index(task_difficulty)
             worker_ids_cursor = await session.execute(
                 sa.select(models.Worker.id).where(

@@ -303,7 +303,7 @@ async def broadcast_task(call: types.CallbackQuery, state: FSMContext):
     async with database.sessionmaker() as session:
         async with session.begin():
             session.add(task)
-    asyncio.create_task(utils.broadcast_task(task))
+    asyncio.create_task(utils.broadcast_task(task.id))
     await state.finish()
     await call.answer()
     await call.message.answer(_("task_broadcasted"))

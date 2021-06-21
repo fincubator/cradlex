@@ -46,7 +46,7 @@ async def set_phone(
     else:
         await state.finish()
         await message.answer(
-            _("welcome_message {name}").format(name=worker.name),
+            _("welcome_message {name}").format(worker.name),
             reply_markup=types.ReplyKeyboardRemove(),
         )
 

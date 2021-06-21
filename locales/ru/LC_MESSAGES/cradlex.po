@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cradlex VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-05-29 22:54+0300\n"
+"POT-Creation-Date: 2021-06-21 22:17+0300\n"
 "PO-Revision-Date: 2021-04-04 23:38+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: cradlex/__main__.py
 msgid "on_time"
@@ -142,6 +142,10 @@ msgstr "Время задачи уже прошло."
 #: cradlex/handlers/worker.py
 msgid "task_taken"
 msgstr "Вы взяли задачу."
+
+#: cradlex/handlers/worker.py
+msgid "task_verified"
+msgstr "Принято!"
 
 #: cradlex/handlers/worker.py
 msgid "make_photo"
@@ -377,3 +381,4 @@ msgstr "Выберите новый навык."
 #: cradlex/handlers/operator/worker_creation.py
 msgid "worker_saved"
 msgstr "Рабочий сохранён."
+

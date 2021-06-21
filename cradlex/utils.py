@@ -5,6 +5,7 @@ import typing
 from datetime import datetime
 
 import phonenumbers
+import pytz
 import sqlalchemy as sa
 from aiogram import types
 from aiogram.utils.emoji import emojize
@@ -82,6 +83,7 @@ async def task_message_lines(
         task_time = datetime.fromisoformat(task["time"])
     else:
         task_time = task["time"]
+    task_time = task_time.astimezone(pytz.timezone("Europe/Moscow"))
     payment = _("payment {payment}").format(payment=task["payment"])
     location = _("location {location}").format(location=task["location"])
     time = _("time {time}").format(time=task_time.strftime(DATE_FORMAT))

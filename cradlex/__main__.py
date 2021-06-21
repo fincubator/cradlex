@@ -19,7 +19,7 @@ from cradlex.i18n import _
 
 
 async def task_loop():
-    timeliness_markup = types.ReplyKeyboardMarkup(row_width=1)
+    timeliness_markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, row_width=1)
     timeliness_markup.add(
         types.KeyboardButton(models.TASK_TIMELINESS["on_time"] + " " + _("on_time")),
         types.KeyboardButton(models.TASK_TIMELINESS["late"] + " " + _("late")),
@@ -27,7 +27,7 @@ async def task_loop():
             models.TASK_TIMELINESS["very_late"] + " " + _("very_late")
         ),
     )
-    start_markup = types.InlineKeyboardMarkup(row_width=1)
+    start_markup = types.InlineKeyboardMarkup(one_time_keyboard=True, row_width=1)
     start_markup.add(
         types.InlineKeyboardButton(_("task_done"), callback_data="task_done"),
     )

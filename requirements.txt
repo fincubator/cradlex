@@ -1,5 +1,5 @@
 aiogram==2.13
-alembic==1.6.4
+alembic==1.6.5
 asyncpg==0.23.0
 emoji==1.2.0
 phonenumbers==8.12.24
